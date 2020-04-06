@@ -87,7 +87,10 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         self.logger.info('Switch %016x received %8d bytes', ev.msg.datapath.id, bytes_received)
 
         if bytes_received > self.traffic_threshold:
-            self.logger.info('Traffic surge detected at %016x', ev.msg.datapath.id)
+            # This additional check is to avoid classifying the first flow stats message received
+            # by the controller from a switch as a surge.
+            if self.switch_traffic_stats[ev.msg.datapath.id]['byte_count'] != 0:
+                self.logger.info('Traffic surge detected at %016x', ev.msg.datapath.id)
 
         self.switch_traffic_stats[ev.msg.datapath.id]['byte_count'] = switch_byte_count
         self.switch_traffic_stats[ev.msg.datapath.id]['packet_count'] = switch_packet_count
