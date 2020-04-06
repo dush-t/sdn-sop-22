@@ -14,7 +14,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         self.datapaths = {}
 
         CONF = cfg.CONF
-        CONF.register_cli_opts([
+        CONF.register_opts([
             cfg.FloatOpt('polling-interval', default=5.0, help='The interval at which switch statistics will be fetched'),
             cfg.IntOpt('traffic-threshold', default=100, help='If a switch recieves traffic higher than this, it is classified as a surge')
         ])
