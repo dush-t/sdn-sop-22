@@ -14,10 +14,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         super(TrafficMonitor, self).__init__(*args, **kwargs)
         self.datapaths = {}
         self.switch_traffic_stats = {}
-        
-
-
-
+    
         CONF = cfg.CONF
         CONF.register_opts([
             cfg.FloatOpt('MAX_POLLING_INTERVAL', default=5.0, help='The interval at which switch statistics will be fetched'),
@@ -26,8 +23,6 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
 
         self.traffic_threshold = CONF.TRAFFIC_THRESHOLD
         self.polling_interval = CONF.MAX_POLLING_INTERVAL
-
-        self.surge_timestamps.put()
 
         self.monitor_thread = hub.spawn(self._monitor)
 
