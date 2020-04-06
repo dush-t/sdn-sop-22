@@ -55,7 +55,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         self.logger.info('---------------- '
                          '-------- ----------------- '
                          '-------- -------- --------')
-        for stat in sorted(body,
+        for stat in sorted([flow for flow in body],
                            key=lambda flow: (flow.match['in_port'],
                                              flow.match['eth_dst'])):
             self.logger.info('%016x %8x %17s %8x %8d %8d',
