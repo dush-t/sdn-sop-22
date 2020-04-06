@@ -30,7 +30,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         while True:
             for dp in self.datapaths.values():
                 self._request_stats(dp)
-            hub.sleep(10)
+            hub.sleep(5)
 
     
     def _request_stats(self, datapath):
