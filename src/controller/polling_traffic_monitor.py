@@ -21,8 +21,9 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         ])
 
         self.traffic_threshold = CONF.TRAFFIC_THRESHOLD
+        self.polling_interval = CONF.POLLING_INTERVAL
 
-        self.monitor_thread = hub.spawn(lambda: self._monitor(CONF.POLLING_INTERVAL))
+        self.monitor_thread = hub.spawn(self._monitor)
 
     @set_ev_cls(ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER])
     def _state_change_handler(self, ev):
@@ -45,7 +46,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         while True:
             for dp in self.datapaths.values():
                 self._request_stats(dp)
-            hub.sleep(5)
+            hub.sleep(self.polling_interval)
 
     
     def _request_stats(self, datapath):
