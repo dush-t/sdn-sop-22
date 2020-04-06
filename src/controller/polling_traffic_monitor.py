@@ -100,3 +100,4 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
 
         self.switch_traffic_stats[ev.msg.datapath.id]['byte_count'] = switch_byte_count
         self.switch_traffic_stats[ev.msg.datapath.id]['packet_count'] = switch_packet_count
+        self.logger.info('')
