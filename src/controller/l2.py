@@ -62,7 +62,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
                              stat.packet_count, stat.byte_count)
 
 
-    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
+    # @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _port_stats_reply_handler(self, ev):
         body = ev.msg.body
 
