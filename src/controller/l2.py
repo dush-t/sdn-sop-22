@@ -34,14 +34,14 @@ class TrafficMonitor(simple_switch.SimpleSwitch):
 
     
     def _request_stats(self, datapath):
-        self.logger.debug('Send stats request to datapath %016x', datapath.id)
+        self.logger.debug('send stats request: %016x', datapath.id)
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
-        
+
         req = parser.OFPFlowStatsRequest(datapath)
         datapath.send_msg(req)
 
-        req = parser.OFPFlowStatsRequest(datapath, 0, ofproto.OFPP_ANY)
+        req = parser.OFPPortStatsRequest(datapath, 0, ofproto.OFPP_ANY)
         datapath.send_msg(req)
 
     
