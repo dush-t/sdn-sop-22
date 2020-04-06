@@ -33,8 +33,8 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
                 self.logger.info('Register datapath %016x', datapath.id)
                 self.datapaths[datapath.id] = datapath
                 self.switch_traffic_stats[datapath.id] = {
-                    'bytes_received': 0,
-                    'packets_received': 0
+                    'bytes_count': 0,
+                    'packet_count': 0
                 }
         elif ev.state == DEAD_DISPATCHER:
             if datapath.id in self.datapaths:
