@@ -12,6 +12,7 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
     def __init__(self, *args, **kwargs):
         super(TrafficMonitor, self).__init__(*args, **kwargs)
         self.datapaths = {}
+        self.switch_traffic_stats = {}
 
         CONF = cfg.CONF
         CONF.register_opts([
@@ -19,7 +20,9 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
             cfg.IntOpt('TRAFFIC_THRESHOLD', default=100, help='If a switch recieves traffic higher than this, it is classified as a surge')
         ])
 
-        self.monitor_thread = hub.spawn(self._monitor)
+        self.traffic_threshold = CONF.TRAFFIC_THRESHOLD
+
+        self.monitor_thread = hub.spawn(lambda: self._monitor(CONF.POLLING_INTERVAL))
 
     @set_ev_cls(ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER])
     def _state_change_handler(self, ev):
@@ -28,6 +31,10 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
             if not datapath.id in self.datapaths:
                 self.logger.info('Register datapath %016x', datapath.id)
                 self.datapaths[datapath.id] = datapath
+                self.switch_traffic_stats[datapath.id] = {
+                    'bytes_received': 0,
+                    'packets_received': 0
+                }
         elif ev.state == DEAD_DISPATCHER:
             if datapath.id in self.datapaths:
                 self.logger.info('Unregister datapath %016x', datapath.id)
@@ -49,9 +56,6 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         req = parser.OFPFlowStatsRequest(datapath)
         datapath.send_msg(req)
 
-        # req = parser.OFPPortStatsRequest(datapath, 0, ofproto.OFPP_ANY)
-        # datapath.send_msg(req)
-
     
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
@@ -63,6 +67,10 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         self.logger.info('---------------- '
                          '-------- ----------------- '
                          '-------- -------- --------')
+
+        switch_byte_count = 0
+        switch_packet_count = 0
+        
         for stat in sorted([flow for flow in body if flow.priority >= 1],
                            key=lambda flow: (flow.match['in_port'],
                                              flow.match['eth_dst'])):
@@ -71,22 +79,14 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
                              stat.match['in_port'], stat.match['eth_dst'],
                              stat.instructions[0].actions[0].port,
                              stat.packet_count, stat.byte_count)
+            switch_byte_count += stat.byte_count
+            switch_packet_count += stat.packet_count
 
+        bytes_received = switch_byte_count - self.switch_traffic_stats[ev.msg.datapath.id]['byte_count']
+        self.logger.info('Switch %016x received %8d bytes', ev.msg.datapath.id, bytes_received)
 
-    # @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
-    def _port_stats_reply_handler(self, ev):
-        body = ev.msg.body
+        if bytes_received > self.traffic_threshold:
+            self.logger.info('Traffic surge detected at %016x', ev.msg.datapath.id)
 
-        self.logger.info('datapath         port     '
-                         'rx-pkts  rx-bytes rx-error '
-                         'tx-pkts  tx-bytes tx-error')
-
-        self.logger.info('---------------- -------- '
-                         '-------- -------- -------- '
-                         '-------- -------- --------')
-        
-        for stat in sorted(body, key=attrgetter('port_no')):
-            self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d', 
-                             ev.msg.datapath.id, stat.port_no,
-                             stat.rx_packets, stat.rx_bytes, stat.rx_errors,
-                             stat.tx_packets, stat.tx_bytes, stat.tx_errors)
+        self.switch_traffic_stats[ev.msg.datapath.id]['byte_count'] = switch_byte_count
+        self.switch_traffic_stats[ev.msg.datapath.id]['packet_count'] = switch_packet_count
