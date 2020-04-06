@@ -41,8 +41,8 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         req = parser.OFPFlowStatsRequest(datapath)
         datapath.send_msg(req)
 
-        req = parser.OFPPortStatsRequest(datapath, 0, ofproto.OFPP_ANY)
-        datapath.send_msg(req)
+        # req = parser.OFPPortStatsRequest(datapath, 0, ofproto.OFPP_ANY)
+        # datapath.send_msg(req)
 
     
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
