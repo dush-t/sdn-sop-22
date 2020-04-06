@@ -1,4 +1,5 @@
 from operator import attrgetter
+import queue
 
 from ryu.app import simple_switch_13
 from ryu.controller import ofp_event
@@ -13,15 +14,20 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         super(TrafficMonitor, self).__init__(*args, **kwargs)
         self.datapaths = {}
         self.switch_traffic_stats = {}
+        
+
+
 
         CONF = cfg.CONF
         CONF.register_opts([
-            cfg.FloatOpt('POLLING_INTERVAL', default=5.0, help='The interval at which switch statistics will be fetched'),
-            cfg.IntOpt('TRAFFIC_THRESHOLD', default=100, help='If a switch recieves traffic higher than this, it is classified as a surge')
+            cfg.FloatOpt('MAX_POLLING_INTERVAL', default=5.0, help='The interval at which switch statistics will be fetched'),
+            cfg.IntOpt('TRAFFIC_THRESHOLD', default=100, help='If a switch recieves traffic higher than this, it is classified as a surge'),
         ])
 
         self.traffic_threshold = CONF.TRAFFIC_THRESHOLD
-        self.polling_interval = CONF.POLLING_INTERVAL
+        self.polling_interval = CONF.MAX_POLLING_INTERVAL
+
+        self.surge_timestamps.put()
 
         self.monitor_thread = hub.spawn(self._monitor)
 
