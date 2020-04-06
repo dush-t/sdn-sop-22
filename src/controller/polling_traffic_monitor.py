@@ -26,11 +26,11 @@ class TrafficMonitor(simple_switch_13.SimpleSwitch13):
         datapath = ev.datapath
         if ev.state == MAIN_DISPATCHER:
             if not datapath.id in self.datapaths:
-                self.logger.debug('Register datapath %016x', datapath.id)
+                self.logger.info('Register datapath %016x', datapath.id)
                 self.datapaths[datapath.id] = datapath
         elif ev.state == DEAD_DISPATCHER:
             if datapath.id in self.datapaths:
-                self.logger.debug('Unregister datapath %016x', datapath.id)
+                self.logger.info('Unregister datapath %016x', datapath.id)
                 del self.datapaths[datapath.id]
 
     
