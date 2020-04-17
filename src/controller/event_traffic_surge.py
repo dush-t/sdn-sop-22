@@ -23,7 +23,7 @@ class TrafficSurge:
         print("Surge ended")
 
 
-class EventTrafficSurge(event.EventBase):
+class EventTrafficSurgeStart(event.EventBase):
     """
     An event class for traffic surge at a switch.
 
@@ -40,6 +40,29 @@ class EventTrafficSurge(event.EventBase):
     """
 
     def __init__(self, surge_data):
-        super(EventTrafficSurge, self).__init__()
+        super(EventTrafficSurgeStart, self).__init__()
+        self.timestamp = time.Time()
+        self.surge_data = surge_data
+
+
+
+class EventTrafficSurgeEnd(event.EventBase):
+    """
+    An event class for traffic surge at a switch.
+
+    An instance of this class is sent to observer whenever a switch experiences a
+    traffic surge.
+    An instance has at least the following attributes.
+
+    ========== ==================================================================
+    Attribute  Description
+    ========== ==================================================================
+    timestamp  [float] the unix timestamp corresponding to the surge
+    surge_data [dict] containing packet_count and byte_count
+    ========== ==================================================================
+    """
+
+    def __init__(self, surge_data):
+        super(EventTrafficSurgeEnd, self).__init__()
         self.timestamp = time.Time()
         self.surge_data = surge_data

@@ -20,11 +20,33 @@ class SwitchStats:
 
         self.byte_count = 0
         self.packet_count = 0
-        self.polling_interval = 10
+        self.is_online = True
     
-    def add_stat(self, stat):
-        bytes_received = stat.byte_count - self.byte_count
-        packets_received = stat.packet_count - self.packet_count
+    def add_stat(self, body):
+
+        self.logger.info('datapath         '
+                         'in-port  eth-dst           '
+                         'out-port packets  bytes')
+        self.logger.info('---------------- '
+                         '-------- ----------------- '
+                         '-------- -------- --------')
+
+        switch_byte_count = 0
+        switch_packet_count = 0
+        
+        for stat in sorted([flow for flow in body if flow.priority >= 1],
+                           key=lambda flow: (flow.match['in_port'],
+                                             flow.match['eth_dst'])):
+            self.logger.info('%016x %8x %17s %8x %8d %8d',
+                             self.datapath.id,
+                             stat.match['in_port'], stat.match['eth_dst'],
+                             stat.instructions[0].actions[0].port,
+                             stat.packet_count, stat.byte_count)
+            switch_byte_count += stat.byte_count
+            switch_packet_count += stat.packet_count
+
+        bytes_received = switch_byte_count - self.byte_count
+        packets_received = switch_packet_count - self.packet_count
         self.traffic_history.append({
             'bytes_received': bytes_received,
             'packets_received': packets_received
@@ -42,7 +64,7 @@ class SwitchStats:
         
 
     def check_for_surge(self, bytes_received, packets_received):
-        if bytes_received > surge_threshold / self.polling_interval:
+        if bytes_received > surge_threshold / polling_interval:
             end_timestamp = time.Time()
             surge_data = {
                 'datapath': self.datapath,
@@ -74,4 +96,9 @@ class SwitchStats:
         old_values = traffic_history[0:break_point]
         pass
 
+    
+    def mark_offline(self):
+        self.is_online = False
 
+    def mark_online(self):
+        self.is_online = True
