@@ -2,6 +2,8 @@ import time
 import copy
 from controller.event_traffic_surge import TrafficSurge
 
+def traffic_history_to_string(history_dict):
+    return history_dict.values().join(",")
 
 class SwitchStats:
     # Half the amount of max elements that can be in traffic_history
@@ -12,15 +14,15 @@ class SwitchStats:
 
     def __init__(self, datapath):
         self.datapath = datapath
-        
         self.traffic_history = []
         self.surge_history = []
-        
         self.current_surge = None
-
         self.byte_count = 0
         self.packet_count = 0
         self.is_online = True
+
+        logfile = open("switch_stats/traffic_history" + str(datapath.id) + ".log", "a+")
+        self.logfile = logfile
     
     def add_stat(self, body):
 
@@ -92,13 +94,15 @@ class SwitchStats:
     # Called when length of traffic_history list crosses a threshold
     # value. This function will purge the list to a file or something.
     def purge_traffic_history(self):
-        break_point = int(traffic_history_depth/2)
-        old_values = traffic_history[0:break_point]
-        pass
+        values_to_write = list(map(traffic_history_to_string, self.traffic_history))
+        self.logfile.writelines(values_to_write)
+        self.traffic_history = []
 
     
     def mark_offline(self):
         self.is_online = False
+        self.logfile.close()
 
     def mark_online(self):
         self.is_online = True
+        self.logfile = open(self.logfile.name, "a+")
