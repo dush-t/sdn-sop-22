@@ -77,17 +77,17 @@ class SwitchStats:
                 'packets_received': packets_received,
                 'bytes_received': bytes_received
             }
-            if self.ongoing_surge != None:
-                self.ongoing_surge.extend(surge_data)
+            if self.current_surge != None:
+                self.current_surge.extend(surge_data)
             else:
-                self.ongoing_surge = TrafficSurge(surge_data)
+                self.current_surge = TrafficSurge(surge_data)
 
-            return self.ongoing_surge
+            return self.current_surge
         else:
-            if self.ongoing_surge != None:
-                self.ongoing_surge.end()
-                surge = copy.copy(self.ongoing_surge)
-                self.ongoing_surge = None
+            if self.current_surge != None:
+                self.current_surge.end()
+                surge = copy.copy(self.current_surge)
+                self.current_surge = None
                 return surge
             else:
                 return None
