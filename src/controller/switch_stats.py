@@ -1,5 +1,6 @@
 import time
 import copy
+import os
 
 from event_traffic_surge import TrafficSurge
 
@@ -22,7 +23,8 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
-        logfile = open("switch_stats/traffic_history/" + str(datapath.id) + ".log", "a+")
+        rel_path = "switch_stats/traffic_history/" + str(datapath.id) + ".log"
+        logfile = open(os.path.join(os.path.dirname(__file__), rel_path), "a+")
         self.logfile = logfile
     
     def add_stat(self, body):
