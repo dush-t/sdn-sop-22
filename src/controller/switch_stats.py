@@ -7,13 +7,6 @@ from event_traffic_surge import TrafficSurge
 def traffic_history_to_string(history_dict):
     return history_dict.values().join(",")
 
-def create_file(path):
-    if not os.path.exists(path):
-        f = open(path, 'w')
-        f.close()
-    else:
-        return
-
 class SwitchStats:
     # Half the amount of max elements that can be in traffic_history
     traffic_history_depth = 100
