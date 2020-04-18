@@ -22,7 +22,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 
-from .surge_monitor import SurgeMonitor
+from surge_monitor import SurgeMonitor
 
 
 # Testing out the surge monitor by extending SimpleSwitch13 from 
