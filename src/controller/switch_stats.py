@@ -1,6 +1,7 @@
 import time
 import copy
-from controller.event_traffic_surge import TrafficSurge
+
+from .event_traffic_surge import TrafficSurge
 
 def traffic_history_to_string(history_dict):
     return history_dict.values().join(",")

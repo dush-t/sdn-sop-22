@@ -6,8 +6,8 @@ from ryu.ofproto import ofproto_v1_3
 from ryu.lib import hub
 from ryu import cfg
 
-from controller.switch_stats import SwitchStats
-from controller.event_traffic_surge import EventTrafficSurgeStart, EventTrafficSurgeEnd
+from .switch_stats import SwitchStats
+from .event_traffic_surge import EventTrafficSurgeStart, EventTrafficSurgeEnd
 
 
 class SurgeMonitor(app_manager.RyuApp):
