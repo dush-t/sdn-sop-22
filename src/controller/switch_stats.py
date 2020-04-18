@@ -23,6 +23,7 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
+        print(os.path.exists(logpath))
         logfile = open(logpath + str(datapath.id) + '.log')
         self.logfile = logfile
     
