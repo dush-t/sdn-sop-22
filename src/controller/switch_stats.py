@@ -62,7 +62,7 @@ class SwitchStats:
         if len(self.traffic_history) == SwitchStats.traffic_history_depth:
             self.purge_traffic_history()
         
-        result = check_for_surge(bytes_received, packets_received)
+        result = self.check_for_surge(bytes_received, packets_received)
         return result
 
         
