@@ -56,8 +56,8 @@ class SwitchStats:
             'packets_received': packets_received
         })
 
-        self.byte_count += stat.byte_count
-        self.packet_count += stat.packet_count
+        self.byte_count += bytes_received
+        self.packet_count += packets_received
 
         if len(self.traffic_history) == traffic_history_depth:
             self.purge_traffic_history()
