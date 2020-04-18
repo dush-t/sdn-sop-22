@@ -59,7 +59,7 @@ class SwitchStats:
         self.byte_count += bytes_received
         self.packet_count += packets_received
 
-        if len(self.traffic_history) == traffic_history_depth:
+        if len(self.traffic_history) == SwitchStats.traffic_history_depth:
             self.purge_traffic_history()
         
         result = check_for_surge(bytes_received, packets_received)
@@ -68,11 +68,11 @@ class SwitchStats:
         
 
     def check_for_surge(self, bytes_received, packets_received):
-        if bytes_received > surge_threshold / polling_interval:
+        if bytes_received > SwitchStats.surge_threshold / SwitchStats.polling_interval:
             end_timestamp = time.Time()
             surge_data = {
                 'datapath': self.datapath,
-                'start_timestamp': end_timestamp - polling_interval,
+                'start_timestamp': end_timestamp - SwitchStats.polling_interval,
                 'end_timestamp': end_timestamp ,
                 'packets_received': packets_received,
                 'bytes_received': bytes_received
