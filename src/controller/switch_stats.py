@@ -23,8 +23,8 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
-        rel_path = "switch_stats/traffic_history/" + str(datapath.id) + ".log"
-        logfile = open(os.path.join(os.path.dirname(__file__), rel_path), "a+")
+        rel_path = 'switch_stats/traffic_history/' + str(datapath.id) + '.log'
+        logfile = open(os.path.join(os.path.dirname(__file__), rel_path), 'a+')
         self.logfile = logfile
     
     def add_stat(self, body):
