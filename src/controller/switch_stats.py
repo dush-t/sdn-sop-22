@@ -22,7 +22,7 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
-        logfile = open("switch_stats/traffic_history" + str(datapath.id) + ".log", "a+")
+        logfile = open("switch_stats/traffic_history/" + str(datapath.id) + ".log", "a+")
         self.logfile = logfile
     
     def add_stat(self, body):
