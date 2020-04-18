@@ -64,7 +64,8 @@ class SurgeMonitor(app_manager.RyuApp):
 
     def _monitor(self, polling_interval):
         while True:
-            for dp in self.switches.values():
+            for switch in self.switches.values():
+                dp = switch.datapath
                 ofproto = dp.ofproto
                 parser = dp.ofproto_parser
                 req = parser.OFPFlowStatsRequest(dp)
