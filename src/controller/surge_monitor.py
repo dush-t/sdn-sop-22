@@ -19,9 +19,9 @@ class SurgeMonitor(app_manager.RyuApp):
 
         CONF = cfg.CONF
         CONF.register_opts([
-            cfg.FloatOpt('POLLING_INTERVAL', default=5.0, help='The interval at which switch statistics will be fetched'),
-            cfg.IntOpt('TRAFFIC_THRESHOLD', default=100, help='If a switch recieves traffic higher than this, it is classified as a surge'),
-            cfg.StrOpt('LOG_PATH', default='/home/mininet/logs/surge_monitor/logs/traffic_history/', help='Path where log files will be stored')
+            cfg.FloatOpt('POLLING_INTERVAL', default=1.0, help='The interval at which switch statistics will be fetched'),
+            cfg.IntOpt('TRAFFIC_THRESHOLD', default=196, help='If a switch recieves traffic higher than this, it is classified as a surge'),
+            cfg.StrOpt('LOG_PATH', default='/home/mininet/surge_monitor/logs/traffic_history/', help='Path where log files will be stored')
         ])
         self.conf = CONF
         
