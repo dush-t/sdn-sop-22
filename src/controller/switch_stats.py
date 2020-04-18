@@ -7,6 +7,13 @@ from event_traffic_surge import TrafficSurge
 def traffic_history_to_string(history_dict):
     return history_dict.values().join(",")
 
+def create_file(path):
+    if not os.path.exists(path):
+        f = open(path, 'w')
+        f.close()
+    else:
+        return
+
 class SwitchStats:
     # Half the amount of max elements that can be in traffic_history
     traffic_history_depth = 100
@@ -23,8 +30,8 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
-        print(os.path.exists(logpath))
-        logfile = open(logpath + str(datapath.id) + '.log')
+        path = logpath + str(datapath.id) + '.log'
+        logfile = open(path, 'a+')
         self.logfile = logfile
     
     def add_stat(self, body):
