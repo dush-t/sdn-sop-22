@@ -11,10 +11,10 @@ class SwitchStats:
     # Half the amount of max elements that can be in traffic_history
     traffic_history_depth = 100
     surge_history_depth = 10
-    surge_threshold = 98 # in bytes/second
+    surge_threshold = 196 # in bytes/second
     polling_interval = 0.5
 
-    def __init__(self, datapath):
+    def __init__(self, datapath, logpath):
         self.datapath = datapath
         self.traffic_history = []
         self.surge_history = []
@@ -23,8 +23,7 @@ class SwitchStats:
         self.packet_count = 0
         self.is_online = True
 
-        rel_path = 'switch_stats/traffic_history/' + str(datapath.id) + '.log'
-        logfile = open(os.path.join(os.path.dirname(__file__), rel_path), 'a+')
+        logfile = open(logpath + str(datapath.id) + '.log')
         self.logfile = logfile
     
     def add_stat(self, body):
